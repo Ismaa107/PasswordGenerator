@@ -1,4 +1,3 @@
-import java.util.InputMismatchException;
 import java.util.Scanner;
 
 /**@author
@@ -6,72 +5,71 @@ import java.util.Scanner;
  */
 public class Main {
 	
-	public static void main (String[] args) {
+	public static void main (String [] args) {
 		
 		Scanner input = new Scanner (System.in);
 		
-		Password pass = new Password ();
-		
 		int length = 0;
-		int type = 0;
-		boolean valid = false;
-		boolean valid2 = false;
+		boolean symbolUse = false;
+		boolean validLength = false;
+		boolean validSymbol = false;
+		
+		String userInput;
+		Password pass;
 		
 		do {
 			
 			try {
 				
-				System.out.println ("Tipo de contraseña: [1] letras y números, [2] letras, números y símbolos. " +
-						"/ Password type: [1] letters and numbers, [2] letters, numbers and symbols.");
-				type = input.nextInt ();
-				
-				if (type == 1 || type == 2) {
-					
-					valid = true;
-					
-				}
-				
-				pass.validateNumber (type);
-				
-			} catch (InputMismatchException | InvalidNumberException e) {
-				
-				System.out.println ("Sólo se puede introducir 1 o 2. / Only 1 or 2 can be introduced.");
-				input.nextLine ();
-				
-			}
-			
-		} while (!valid);
-		
-		do {
-			
-			try {
-				
-				System.out.println ("Longitud de contraseña, 8 por defecto. / Password length, 8 by default.");
+				System.out.print ("Longitud de contraseña, 8 por defecto. / Password length, 8 by default: ");
 				length = input.nextInt ();
 				
 				if (length > 0) {
 					
-					valid2 = true;
+					validLength = true;
 					
 				}
 				
-			} catch (InputMismatchException e) {
+			} catch (NumberFormatException e) {
 				
-				System.out.println ("Introduce un número");
+				System.out.println ("Introduce un número entero.");
 				input.nextLine ();
 				
 			}
 			
-		} while (!valid2);
+		} while (!validLength);
 		
-		switch (type) {
-			
-			case 1 -> pass = new Password (length, type);
-			
-			case 2 -> pass = new Password (length, type);
-			
-		}
+		input.nextLine ();
 		
+		do {
+			
+			try {
+				
+				System.out.print ("Añadir símbolos: [si / s] letras, números y símbolos, [no / n] letras y números. " +
+						"/ Add symbols: [yes / y] letters, numbers and symbols, [no / n] letters and numbers: ");
+				userInput = input.nextLine ().trim ().toLowerCase ();
+				
+				if (userInput.equals ("si") || userInput.equals ("s") || userInput.equals ("yes") || userInput.equals ("y")) {
+					
+					symbolUse = true;
+					validSymbol = true;
+					
+				} else if (userInput.equals ("no") || userInput.equals ("n")) {
+					
+					validSymbol = true;
+					
+				}
+					
+			} catch (IllegalArgumentException e) {
+				
+				System.out.println (e.getMessage ());
+				input.nextLine ();
+				
+			}
+			
+		} while (!validSymbol);
+		
+		pass = new Password (length, symbolUse);
 		System.out.println (pass.getPassword ());
 	
 	}

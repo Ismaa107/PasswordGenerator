@@ -1,3 +1,5 @@
+import java.util.Random;
+
 /**
  *
  * @author Isma
@@ -12,19 +14,10 @@ public class Password {
 	private String password; // Variable con la contraseña.
 	
 	// Constructores.
-	public Password (int length, int type) { // Constructor principal.
+	public Password (int length, boolean symbolUse) { // Constructor principal.
 		
 		this.length = length;
-		
-		if (type == 1) {
-			
-			this.password = generatePassword1 (length);
-			
-		} else {
-			
-			this.password = generatePassword2 (length);
-			
-		}
+		this.password = generatePassword (length, symbolUse);
 		
 	}
 	
@@ -66,25 +59,17 @@ public class Password {
 	}
 	
 	// Métodos.
-	public void validateNumber (int number) throws InvalidNumberException {
+	public String generatePassword (int length, boolean symbolUse) {
 		
-		if (number != 1 && number != 2) {
-			
-			throw new InvalidNumberException ("Sólo se puede introducir 1 o 2. / Only 1 or 2 can be introduced...");
-			
-		}
+		String letters = "abcdefghijklmnñopqrstuvwxyzABCDEFGHIJKLMNÑOPQRSTUVWXYZ"; // 54 characters.
+		String numbers = "0123456789"; // 10 characters.
+		String symbols = "+-*/%=()[]{}<>\\!|\"@#$~&?'^`,;.:_"; // 32 characters.
+		String characters = letters + numbers;
 		
-	}
-	
-	public String generatePassword1 (int length) {
+		int rng;
 		
-		/*Upper case letters: A to Z (26 characters)
-    	Lower case letters: a to z (26 characters)
-    	Numbers: 0 to 9 (10 characters)
-    	Symbols: (space) ! " # $ % & ' ( ) * + , - . / : ; < = > ? @ [ \ ] ^ _` { | } ~ (33 characters)*/
-		
-		String characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-		String pass = "";
+		Random random = new Random ();
+		StringBuilder sb = new StringBuilder ();
 		
 		if (length < getDEFAULT_LENGTH ()) {
 			
@@ -92,86 +77,32 @@ public class Password {
 			
 		}
 		
-		while (!isStrong1 (pass)) {
+		if (symbolUse) {
 			
-			pass = "";
+			characters += symbols;
+			
+		}
+		
+		while (!isStrong (sb, symbolUse)) {
+			
+			sb = new StringBuilder ();
 			
 			for (int i = 0; i < length; i++) {
 				
-				pass += characters.charAt ((int) (Math.random () * characters.length ())) ;
+				rng = random.nextInt (characters.length ());
+				sb.append (characters.charAt (rng));
 				
 			}
 			
 		}
 		
-		return pass;
-	
-	}
-	
-	public String generatePassword2 (int length) {
-		
-		String characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~";
-		String pass = "";
-		
-		if (length < getDEFAULT_LENGTH ()) {
-			
-			length = getDEFAULT_LENGTH ();
-			
-		}
-		
-		while (!isStrong2 (pass)) {
-			
-			pass = "";
-			
-			for (int i = 0; i < length; i++) {
-				
-				pass += characters.charAt ((int) (Math.random () * characters.length ())) ;
-				
-			}
-			
-		}
-		
-		return pass;
+		return sb.toString ();
 		
 	}
 	
-	public boolean isStrong1 (String pass) {
+	public boolean isStrong (StringBuilder pass, boolean symbolUse) {
 		
-		int upperCounter = 0;
-		int lowerCounter = 0;
-		int numCounter = 0;
-		
-		for (int i = 0; i < pass.length (); i++) {
-			
-			char character = pass.charAt (i);
-		
-			if (Character.isUpperCase (character)) {
-				
-				upperCounter++;
-				
-			} else if (Character.isLowerCase (character)) {
-				
-				lowerCounter++;
-				
-			} else {
-				
-				numCounter++;
-				
-			}
-		
-		}
-		
-		if (upperCounter < 2 || lowerCounter < 2 || numCounter < 2) {
-			
-			return false;
-			
-		}
-		
-		return true;
-		
-	}
-	
-	public boolean isStrong2 (String pass) {
+		char character;
 		
 		int upperCounter = 0;
 		int lowerCounter = 0;
@@ -180,7 +111,7 @@ public class Password {
 		
 		for (int i = 0; i < pass.length (); i++) {
 			
-			char character = pass.charAt (i);
+			character = pass.charAt (i);
 			
 			if (Character.isUpperCase (character)) {
 				
@@ -202,9 +133,21 @@ public class Password {
 			
 		}
 		
-		if (upperCounter < 1 || lowerCounter < 1 || numCounter < 1 || symbolCounter < 1) {
+		if (symbolUse) {
 			
-			return false;
+			if (upperCounter < 1 || lowerCounter < 1 || numCounter < 1 || symbolCounter < 1) {
+				
+				return false;
+				
+			}
+			
+		} else {
+			
+			if (upperCounter < 2 || lowerCounter < 2 || numCounter < 2) {
+				
+				return false;
+				
+			}
 			
 		}
 		
