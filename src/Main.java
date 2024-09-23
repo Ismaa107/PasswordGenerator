@@ -1,3 +1,4 @@
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 /**@author
@@ -30,7 +31,7 @@ public class Main {
 					
 				}
 				
-			} catch (NumberFormatException e) {
+			} catch (InputMismatchException e) {
 				
 				System.out.println ("Introduce un número entero.");
 				input.nextLine ();
@@ -58,12 +59,15 @@ public class Main {
 					
 					validSymbol = true;
 					
+				} else {
+					
+					throw new InputMismatchException ();
+					
 				}
 					
-			} catch (IllegalArgumentException e) {
+			} catch (InputMismatchException e) {
 				
-				System.out.println (e.getMessage ());
-				input.nextLine ();
+				System.out.println ("Introduce si/s o no/n / Enter yes/y or no/n.");
 				
 			}
 			

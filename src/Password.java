@@ -59,6 +59,7 @@ public class Password {
 	}
 	
 	// Métodos.
+	// Método principal del programa que generará una contraseña de forma aleatoria entre 96 caracteres (letras minúsculas, mayúsculas, números y símbolos).
 	public String generatePassword (int length, boolean symbolUse) {
 		
 		String letters = "abcdefghijklmnñopqrstuvwxyzABCDEFGHIJKLMNÑOPQRSTUVWXYZ"; // 54 characters.
@@ -100,6 +101,8 @@ public class Password {
 		
 	}
 	
+	// Método para conseguir que la contraseña sea más resistente a ataques de fuerza bruta.
+	// En caso de que no se soliciten símbolos, que tenga 2 caracteres de cada tipo. En caso de que se soliciten símbolos, un caracter de cada tipo.
 	public boolean isStrong (StringBuilder pass, boolean symbolUse) {
 		
 		char character;
